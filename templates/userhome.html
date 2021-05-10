@@ -1,0 +1,166 @@
+{% extends 'base.html' %} {% block content %}
+
+
+<div class="container mt-3">
+  <ul class="nav nav-pills">
+    <li id="listbook" class="active col-auto nav-item"><a class="nav-link active" id="anchorlistbook" data-toggle="tab"
+        href="#booklist">Booklist</a></li>
+    <li id="booksmy" class="col-auto nav-item"><a class="nav-link" data-toggle="tab" href="#mybooks">My Books</a></li>
+    <li id="profilemy" class="col-auto nav-item"><a class="nav-link" id="anchormyprofile" data-toggle="tab"
+        href="#myprofile">My Profile</a></li>
+
+
+  </ul>
+
+  <div class="tab-content m-3 p-3">
+    <div id="booklist" class="tab-pane active in">
+      <table class="table m-3">
+        <thead>
+          <th>ID</th>
+          <th>Book Name</th>
+          <th>Author</th>
+          <th>Year</th>
+          <th>Availablity</th>
+          <th></th>
+        </thead>
+        <tbody>
+          {% for book in books %}
+          <tr>
+            <td>{{book[0].id}}</td>
+            <td>{{book[0].bookname}}</td>
+            <td>{{book[0].author}}</td>
+            <td>{{book[0].year}}</td>
+            {% if book[1] != None %}
+            <td>Issued</td>
+            {% else %}
+            <td>Available</td>
+
+            {% endif %}
+            {% endfor %}
+          </tr>
+        </tbody>
+
+
+      </table>
+    </div>
+    <div id="mybooks" class="tab-pane fade mybooks">
+      <table class="table p-3">
+        <thead>
+          <th>Book Id</th>
+          <th>Book Name</th>
+          <th>Author</th>
+          <th>Year</th>
+          <th>Return Date</th>
+          <th>Fine</th>
+        </thead>
+        <tbody>
+          {% for book in mybooks %}
+          <tr>
+            <td>{{book[1].id}}</td>
+            <td>{{book[1].bookname}}</td>
+            <td>{{book[1].author}}</td>
+            <td>{{book[1].year}}</td>
+            <td>{{book[2].returndate}}</td>
+            {% if book[2].fine > 0 %}
+            <td>₹ {{book[2].fine}}</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div id="myprofile" class="tab-pane fade">
+
+      <div class="row col-sm-12 m-2">
+        <div class="card mx-5" style="width: 21rem;">
+          <img src="{{url_for('static', filename='person.png')}}" class="card-img-top" style="height: 60%;" alt="...">
+          <div class="card-body">
+            <h5 class="card-title text-center"><strong>{{user.fname}} {{user.lname}}</strong></h5>
+            <div class="row mt-3">
+              <div class="col-sm-4">
+                User Id
+              </div>
+              <div class="col-sm-6">
+                {{user.id}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                Username
+              </div>
+              <div class="col-sm-6">
+                {{user.username}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                Email
+              </div>
+              <div class="col-sm-6">
+                {{user.email}}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="container col-sm-4 mt-5 m-3 mx-5 p-3">
+          <h3 class="mx-3">Change Password</h3>
+          {% if message %}
+          <div class="alert alert-success p-3" role="alert">
+            {{message}}
+          </div>
+          {% endif %}
+          {% if error %}
+          <div class="alert alert-danger p-3" role="alert">
+            {{error}}
+          </div>
+          {% endif %}
+          <form action="/changepassword" method="POST">
+            <div class="form-group row p-3 mt-3 mx-3 col-sm-12">
+              <label>Old Password</label>
+              <input required type="password" class="form-control" name="oldpassword">
+            </div>
+            <div class="form-group row px-3 mx-3 col-sm-12">
+              <label>New Password</label>
+              <input required type="password" class="form-control" name="newpassword">
+            </div>
+            <div class="form-group row px-3 mx-3 col-sm-12">
+              <label>Confirm Password</label>
+              <input required type="password" class="form-control" name="confirmpassword">
+            </div>
+            <div class="form-group row mx-3 px-3">
+
+              <input type="submit" class="btn btn-primary" value="Submit">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+
+</div>
+
+<script>
+  var tab = "{{tab}}"
+  console.log(tab)
+  if (tab == "3") {
+    $('#listbook').removeClass("active")
+    $('#anchorlistbook').removeClass("active")
+    $('#profilemy').addClass("active")
+    $('#anchormyprofile').addClass("active")
+    $('#booklist').removeClass("active")
+    $('#booklist').removeClass("in")
+    $('#myprofile').addClass("active")
+    $('#myprofile').addClass("in")
+    $('#myprofile').removeClass("fade")
+  }
+</script>
+
+{% endblock %}

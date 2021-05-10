@@ -1,0 +1,384 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <ul class="nav nav-pills">
+    <li id="bookadd" class="active col-auto nav-item"><a class="nav-link active" id="anchorbook" data-toggle="tab"
+        href="#addbook">Add
+        Book</a></li>
+    <li id="adminadd" class="col-auto nav-item"><a class="nav-link" id="anchoradmin" data-toggle="tab"
+        href="#addadmin">Add Admin</a>
+    </li>
+    <li id="statusbook" class="col-auto nav-item"><a class="nav-link" data-toggle="tab" href="#bookstatus">Book
+        Status</a></li>
+    <li id="returnissue" class="col-auto  nav-item"><a class="nav-link" id="anchorissue" data-toggle="tab"
+        href="#issuereturn">Book
+        Issue/Return</a></li>
+
+    <li class="col-auto nav-item"><a class="nav-link" data-toggle="tab" href="#userlist">User List</a></li>
+
+  </ul>
+
+  <div class="tab-content m-3 p-3">
+    <div id="addbook" class="tab-pane active in">
+      {% if flag == "5" %}
+      <div class="alert alert-success p-3" role="alert">
+        Book added...
+      </div>
+      {% endif %}
+      <form class="m-4" action="/addbook" method="POST">
+        <div class="form-group row">
+          <label for="bookname" class="col-sm-2 col-form-label">Book Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="bookname" id="bookname">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="author" class="col-sm-2 col-form-label">Author</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="author" name="author">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="year" class="col-sm-2 col-form-label">Year</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="year" name="year">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <input type="submit" class="btn btn-primary" value="Add Book">
+        </div>
+      </form>
+    </div>
+    <div id="addadmin" class="tab-pane fade">
+      {% if flag == "6" %}
+      <div class="alert alert-success p-3" role="alert">
+        Admin added...
+      </div>
+      {% endif %}
+      <form class="m-4" action="/addadmin" method="POST">
+        <div class="form-group row">
+          <label for="fname" class="col-sm-2 col-form-label">First Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="fname" id="fname">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="lname" class="col-sm-2 col-form-label">Last Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="lname" name="lname">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="email" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="email" name="email" placeholder="example@gmail.com">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="username" class="col-sm-2 col-form-label">Username</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="username" name="username">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="password" class="col-sm-2 col-form-label">Password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="password" name="password" placeholder="******">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <input type="submit" class="btn btn-primary" value="Add Admin">
+        </div>
+      </form>
+    </div>
+
+    <div id="bookstatus" class="tab-pane fade">
+      <table class="table m-4">
+        <thead>
+          <th>ID</th>
+          <th>Book Name</th>
+          <th>Author</th>
+          <th>Year</th>
+          <th>Book Status</th>
+        </thead>
+        <tbody>
+          {% for book in books %}
+          <tr>
+            <td>{{book[0].id}}</td>
+            <td>{{book[0].bookname}}</td>
+            <td>{{book[0].author}}</td>
+            <td>{{book[0].year}}</td>
+            {% if book[1] != None %}
+            <td><a href="" data-toggle="modal" data-id="{{book[0].id}}" data-bookname="{{book[0].bookname}}"
+                data-author="{{book[0].author}}" data-year="{{book[0].year}}" data-userid="{{book[2].id}}"
+                data-username="{{book[2].fname}} {{book[2].lname}}" data-issuedate="{{book[1].issuedate}}"
+                data-returndate="{{book[1].returndate}}" data-fine="{{book[1].fine}}" data-target="#exampleModal"
+                style="color: black;">Issued</a></td>
+            {% else %}
+            <td>Available</td>
+            <td></td>
+            {% endif %}
+
+
+            {% endfor %}
+          </tr>
+        </tbody>
+
+
+      </table>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <a id="id"></a></br>
+              <a id="author"></a></br>
+              <a id="year"></a></br>
+              <a id="userid"></a></br>
+              <a id="username"></a></br>
+              <a id="issuedate"></a></br>
+              <a id="returndate"></a></br>
+              <a id="fine"></a>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        $('#exampleModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+
+          // Extract info from data-* attributes
+          // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+          // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+          var id = button.data('id')
+          var author = button.data('author')
+          var year = button.data('year')
+          var userid = button.data('userid')
+          var username = button.data('username')
+          var issuedate = button.data('issuedate')
+          var returndate = button.data('returndate')
+          var fine = button.data('fine')
+          var modal = $(this)
+          var bookname = button.data('bookname')
+          modal.find('.modal-title').text(bookname)
+          modal.find('.modal-body #id').text("Book Id - " + id)
+          modal.find('.modal-body #author').text("Author - " + author)
+          modal.find('.modal-body #year').text("Year - " + year)
+          modal.find('.modal-body #userid').text("Issuer ID - " + userid)
+          modal.find('.modal-body #username').text("Issuer Name- " + username)
+          modal.find('.modal-body #issuedate').text("Issue Date - " + issuedate)
+          modal.find('.modal-body #returndate').text("Return Date - " + returndate)
+        
+          modal.find('.modal-body #fine').text("Fine - ₹" + fine)
+          
+
+        })
+      </script>
+
+
+
+    </div>
+
+
+    <div id="issuereturn" class="tab-pane fade">
+      <div class="container col-sm-10 m-4 mb-5 border">
+
+
+        <!--Issue container-->
+        <div class="container col-sm-10 m-4">
+          <h3>Book Issue</h3>
+        </div>
+        <div class="container col-sm-10 m-4">
+          {% if flag == "0" %}
+          <div class="alert alert-danger p-3" role="alert">
+            Invalid Book ID !!!
+          </div>
+          {% elif flag== "1" %}
+          <div class="alert alert-danger p-3" role="alert">
+            Invalid User ID !!!
+          </div>
+          {% elif flag=="2" %}
+          <div class="alert alert-success p-3" role="alert">
+            Book Issued...
+          </div>
+          {% endif %}
+
+          <form class="col-sm-10 m-4" action="/issue" method="POST">
+            <div class="form-group row">
+              <label for="bookid" class="col-sm-2 col-form-label">Book Id</label>
+              <div class="col-sm-4">
+                {% if book %}
+                <input type="number" class="form-control" name="issuebookid" id="issuebookid" value="{{book.id}}">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="userid" class="col-sm-2 col-form-label">User ID</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" id="issueuserid" name="issueuserid" value="{{user.id}}">
+                {% else %}
+                <input type="number" class="form-control" name="issuebookid" id="issuebookid">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="userid" class="col-sm-2 col-form-label">User ID</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" id="issueuserid" name="issueuserid">
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-sm-2 p-0">
+              <input type="submit" class="btn btn-primary" style="color: white;" value="Issue">
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+
+
+
+      <!--Return Form-->
+      <div class="container col-sm-10 m-4 mt-5 border">
+        <div class="container col-sm-10 m-4">
+          <h3>Book Return</h3>
+        </div>
+        <div class="container col-sm-10 m-4">
+          {% if flag == "4" %}
+          <div class="alert alert-danger p-3" role="alert">
+            Invalid Book ID !!!
+          </div>
+          {% elif flag=="3" %}
+          <div class="alert alert-success p-3" role="alert">
+            Book Returned...
+          </div>
+          {% endif %}
+          <form class="m-4 col-sm-10" action="/returnbook" method="POST">
+            <div class="form-group row">
+              <label for="bookid" class="col-sm-2 col-form-label">Book Id</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" name="returnbookid" id="returnbookid">
+              </div>
+            </div>
+            <div class="col-sm-10 p-0">
+              <input type="submit" class="btn btn-primary" value="Return">
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+    </div>
+    <div id="userlist" class="tab-pane fade">
+      <table class="table m-4">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Email ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{user.id}}</td>
+            <td>{{user.fname}} {{user.lname}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.email}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal to show issue details-->
+<div class="modal fade" id="issueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{% if book %} {{book.bookname}} {% endif %}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% if book %}
+        <a id="id">Book Id - {{book.id}}</a></br>
+        <a id="author">Author - {{book.author}}</a></br>
+        <a id="year">Year - {{book.year}}</a></br>
+        <a id="userid">Issuer ID - {{user.id}}</a></br>
+        <a id="username">Issuer - {{user.fname}} {{user.lname}}</a></br>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <form action="/issuebook" method="POST">
+          {% if book %}
+          <input type="text" name="issuebookid" value="{{book.id}}" hidden>
+          <input type="text" name="issueuserid" value="{{user.id}}" hidden>
+          {% endif %}
+          <input type="submit" class="btn btn-primary" value="Issue">
+          <form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Script for tabs change on reload-->
+<script>
+  var tab = "{{tab}}"
+  var bool = "{{modal}}"
+  console.log(bool, typeof (bool))
+  if (bool == "1") {
+    $('#issueModal').modal('show');
+  }
+
+  if (tab == "1") {} else if (tab == "2") {
+    $('#addbook').removeClass("in");
+    $('#addbook').removeClass("active");
+    $('#bookadd').removeClass("active");
+    $('#adminadd').addClass("active")
+    $('#addadmin').addClass("in");
+    $('#addadmin').addClass("active");
+    $('#addadmin').removeClass("fade");
+
+    $('#anchorbook').removeClass("active");
+    $('#anchoradmin').addClass("active")
+
+  } else if (tab == "4") {
+    $('#addbook').removeClass("in");
+    $('#addbook').removeClass("active");
+    $('#bookadd').removeClass("active");
+    $('#returnissue').addClass("active")
+    $('#issuereturn').addClass("in");
+    $('#issuereturn').addClass("active");
+    $('#issuereturn').removeClass("fade");
+
+
+    $('#anchorbook').removeClass("active");
+    $('#anchorissue').addClass("active")
+  }
+</script>
+
+
+{% endblock %}
